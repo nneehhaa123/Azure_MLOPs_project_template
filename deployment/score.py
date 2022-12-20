@@ -4,6 +4,7 @@ import joblib
 import time
 from azureml.core.model import Model
 import yaml
+import re
 
 # from inference_schema.schema_decorators \
 #     import input_schema, output_schema
@@ -20,7 +21,9 @@ def read_params(config_path=params_path):
 def init():
     global MODEL
     # Load the model from file into a global object
-    model_path = Model.get_model_path(config['base']['model_name'])
+    m_name = config['base']['model_name']
+    m_name = re.sub('.pkl', '', m_name)
+    model_path = Model.get_model_path(m_name)
     MODEL = joblib.load(model_path)
     # Print statement for appinsights custom traces:
     print("model initialized" + time.strftime("%H:%M:%S"))
